@@ -10,7 +10,7 @@ class OrderDetailsPage extends StatelessWidget {
   const OrderDetailsPage({super.key, required this.order});
 
   String _formatOrderDate(DateTime date) {
-    DateTime localDate = date.toLocal().add(Duration(hours: 2)); 
+    DateTime localDate = date.toLocal().add(Duration(hours: 2));
     final DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm a');
     return formatter.format(localDate);
   }
@@ -29,7 +29,8 @@ class OrderDetailsPage extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColor.primaryColorDark, width: 4),
+                  border:
+                      Border.all(color: AppColor.primaryColorDark, width: 4),
                   color: AppColor.secondaryBackgroundColor,
                 ),
                 child: Card(
@@ -65,7 +66,8 @@ class OrderDetailsPage extends StatelessWidget {
               SizedBox(height: 16),
               Text(
                 'Ordered on: ${_formatOrderDate(order.createdAt)}',
-                style: TextStyle(fontSize: 16, color: AppColor.textSecondaryColor),
+                style:
+                    TextStyle(fontSize: 16, color: AppColor.textSecondaryColor),
               ),
               SizedBox(height: 16),
               Center(
@@ -80,8 +82,12 @@ class OrderDetailsPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProductDetailsPage(
-                              productId: order.productId, title: order.name)),
+                        builder: (context) => ProductDetailsPage(
+                          productId: order.productId,
+                          title: order.name,
+                          showCartIcon: true,
+                        ),
+                      ),
                     );
                   },
                   child: Text('View Product',

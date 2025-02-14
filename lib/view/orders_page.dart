@@ -8,15 +8,20 @@ import 'package:final_project/service/api_service.dart';
 import 'package:final_project/theme/app_color.dart';
 import 'package:shimmer/shimmer.dart';
 
-class OrdersPage extends StatelessWidget {
+class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
 
+  @override
+  State<OrdersPage> createState() => _OrdersPageState();
+}
+
+class _OrdersPageState extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     final profileController = ProfileController(ApiService());
 
     return Scaffold(
-      appBar:CustomAppBar(title: 'Orders'),
+      appBar: CustomAppBar(title: 'Orders'),
       backgroundColor: AppColor.secondaryBackgroundColor,
       body: FutureBuilder<List<Order>>(
         future: profileController.getOrders(),
@@ -29,14 +34,19 @@ class OrdersPage extends StatelessWidget {
                 highlightColor: Colors.grey[100]!,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: ShimmerWidget.rectangular(width: double.infinity, height: 80),
+                  child: ShimmerWidget.rectangular(
+                      width: double.infinity, height: 80),
                 ),
               ),
             );
           } else if (snapshot.hasError) {
-            return Center(child: Text('No orders available 🛒', style: Theme.of(context).textTheme.titleLarge));
+            return Center(
+                child: Text('No orders available 🛒',
+                    style: Theme.of(context).textTheme.titleLarge));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No orders available 🛒', style:Theme.of(context).textTheme.titleLarge));
+            return Center(
+                child: Text('No orders available 🛒',
+                    style: Theme.of(context).textTheme.titleLarge));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -45,21 +55,32 @@ class OrdersPage extends StatelessWidget {
                 return Card(
                   margin: EdgeInsets.all(8),
                   elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     contentPadding: EdgeInsets.all(12),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(order.image, width: 60, height: 60, fit: BoxFit.cover),
+                      child: Image.network(order.image,
+                          width: 60, height: 60, fit: BoxFit.cover),
                     ),
-                    title: Text(order.name, style: TextStyle(fontWeight: FontWeight.bold, color: AppColor.primaryColorDark)),
-                    subtitle: Text('Total: \$${order.total.toStringAsFixed(2)}', style: TextStyle(color: AppColor.textSecondaryColor)),
-                    trailing: Icon(Icons.arrow_forward_ios, color: AppColor.primaryColor),
+                    title: Text(order.name,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.primaryColorDark)),
+                    subtitle: Text('Total: \$${order.total.toStringAsFixed(2)}',
+                        style: TextStyle(color: AppColor.textSecondaryColor)),
+                    trailing: Icon(Icons.arrow_forward_ios,
+                        color: AppColor.primaryColor),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => OrderDetailsPage(order: order)),
-                      );
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OrderDetailsPage(order: order)),
+                      ).then((_) {
+                        setState(() {});
+                      });
                     },
                   ),
                 );

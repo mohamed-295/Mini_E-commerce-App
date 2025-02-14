@@ -26,8 +26,7 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-    _controller =
-        CartController(ApiService());
+    _controller = CartController(ApiService());
     _loadUserData();
   }
 
@@ -53,7 +52,10 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.secondaryBackgroundColor,
-      appBar: CustomAppBar(title: 'Cart',isLeading: false,),
+      appBar: CustomAppBar(
+        title: 'Cart',
+        isLeading: false,
+      ),
       body: RefreshIndicator(
         color: AppColor.primaryColor,
         onRefresh: _refreshCart,
@@ -63,8 +65,9 @@ class _CartPageState extends State<CartPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return ShimmerLoading();
             } else if (snapshot.hasError) {
-              return Center(child: Text('Add items to your cart 🛒',
-                  style: Theme.of(context).textTheme.titleMedium));
+              return Center(
+                  child: Text('Add items to your cart 🛒',
+                      style: Theme.of(context).textTheme.titleMedium));
             } else if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
               return Stack(
                 children: [
@@ -88,16 +91,22 @@ class _CartPageState extends State<CartPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ProductDetailsPage(
-                                    title: item.name,
-                                    productId: item.productId),
+                                  title: item.name,
+                                  productId: item.productId,
+                                  showCartIcon: false,
+                                ),
                               ),
-                            );
+                            ).then((_) {
+                              _refreshCart();
+                            });
                           },
                           child: Container(
                             height: 120,
                             child: Row(
                               children: [
-                                ImageLoading(url: item.image,),
+                                ImageLoading(
+                                  url: item.image,
+                                ),
                                 SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
@@ -129,31 +138,44 @@ class _CartPageState extends State<CartPage> {
                                       showDialog(
                                         context: context,
                                         builder: (context) {
-                                            return AlertDialog(
-                                            backgroundColor: AppColor.secondaryBackgroundColor,
-                                            title: Text('Remove item from cart?',style: Theme.of(context).textTheme.titleLarge,),
+                                          return AlertDialog(
+                                            backgroundColor: AppColor
+                                                .secondaryBackgroundColor,
+                                            title: Text(
+                                              'Remove item from cart?',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge,
+                                            ),
                                             actions: [
                                               TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text('Cancel',style: Theme.of(context).textTheme.titleSmall,),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(
+                                                  'Cancel',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall,
+                                                ),
                                               ),
                                               TextButton(
-                                              onPressed: () async {
-                                                try {
-                                                await _controller
-                                                  .removeFromCart(item.id, _user!.token);
-                                                await _refreshCart();
-                                                Navigator.pop(context);
-                                                } catch (error) {
-                                               
-                                                }
-                                              },
-                                              child: Text('Remove',style: Theme.of(context).textTheme.titleSmall),
+                                                onPressed: () async {
+                                                  try {
+                                                    await _controller
+                                                        .removeFromCart(item.id,
+                                                            _user!.token);
+                                                    await _refreshCart();
+                                                    Navigator.pop(context);
+                                                  } catch (error) {}
+                                                },
+                                                child: Text('Remove',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleSmall),
                                               ),
                                             ],
-                                            );
+                                          );
                                         },
                                       );
                                     }),
@@ -178,9 +200,13 @@ class _CartPageState extends State<CartPage> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  final productIds = snapshot.data!.items.map((item) => item.id).toList();
+                                  final productIds = snapshot.data!.items
+                                      .map((item) => item.id)
+                                      .toList();
                                   try {
-                                    await Provider.of<CartController>(context,listen: false) .checkout(productIds, _user!.token);
+                                    await Provider.of<CartController>(context,
+                                            listen: false)
+                                        .checkout(productIds, _user!.token);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text('Order placed!'),
@@ -220,8 +246,9 @@ class _CartPageState extends State<CartPage> {
                 ],
               );
             } else {
-              return Center(child: Text('Your cart is empty',
-                  style: Theme.of(context).textTheme.titleMedium));
+              return Center(
+                  child: Text('Your cart is empty',
+                      style: Theme.of(context).textTheme.titleMedium));
             }
           },
         ),

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl ='';//APi url hidden for some reasons
+  final String baseUrl =''; //App url hidden for some reasons
 
   ApiService();
 

@@ -1,6 +1,7 @@
 import 'package:final_project/controller/cart_controller.dart';
 import 'package:final_project/model/user_model.dart';
 import 'package:final_project/service/cashe_service.dart';
+import 'package:final_project/view/cart_page.dart';
 import 'package:final_project/view/widgets/shimmer_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,10 @@ import '../theme/app_color.dart';
 class ProductDetailsPage extends StatefulWidget {
   final int productId;
   final String title;
-  ProductDetailsPage({required this.productId, required this.title});
+  final bool showCartIcon;
+
+  ProductDetailsPage(
+      {required this.productId, required this.title, this.showCartIcon = true});
 
   @override
   _ProductDetailsPageState createState() => _ProductDetailsPageState();
@@ -40,10 +44,26 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       backgroundColor: AppColor.secondaryBackgroundColor,
       appBar: AppBar(
         backgroundColor: AppColor.secondaryBackgroundColor,
-        title: Text(widget.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColor.secondaryColorDark)),
+        title: Text(widget.title,
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColor.secondaryColorDark)),
+        actions: widget.showCartIcon
+            ? [
+                IconButton(
+                  icon: Icon(Icons.shopping_cart),
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CartPage()));
+                  },
+                ),
+              ]
+            : null,
       ),
       body: FutureBuilder<Product?>(
-        future: Provider.of<ProductController>(context, listen: false).fetchProductById(widget.productId),
+        future: Provider.of<ProductController>(context, listen: false)
+            .fetchProductById(widget.productId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return ShimmerLoading();
@@ -66,7 +86,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColor.secondaryColorDark, width: 4),
+                              border: Border.all(
+                                  color: AppColor.secondaryColorDark, width: 4),
                               color: AppColor.secondaryBackgroundColor,
                             ),
                             child: Card(
@@ -78,7 +99,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ),
                           ),
                           SizedBox(height: 16),
-                          Text(product.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColor.secondaryColorDark)),
+                          Text(product.name,
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColor.secondaryColorDark)),
                           SizedBox(height: 8),
                           Text(product.description),
                           SizedBox(height: 8),
@@ -96,7 +121,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   });
                                 },
                               ),
-                              Text(quantity.toString(), style: TextStyle(fontSize: 18)),
+                              Text(quantity.toString(),
+                                  style: TextStyle(fontSize: 18)),
                               IconButton(
                                 icon: Icon(Icons.add),
                                 onPressed: () {
@@ -122,19 +148,27 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Provider.of<CartController>(context, listen: false).addToCart(product.id, quantity, _user.token);
+                            Provider.of<CartController>(context, listen: false)
+                                .addToCart(product.id, quantity, _user.token);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('$quantity x ${product.name} added to cart successfully'), backgroundColor: AppColor.successColor),
+                              SnackBar(
+                                  content: Text(
+                                      '$quantity x ${product.name} added to cart successfully'),
+                                  backgroundColor: AppColor.successColor),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColor.secondaryColorDark,
                             padding: EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
                           child: Text(
                             'Add to Cart',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
                       ),
